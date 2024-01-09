@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+
   "scripts": {
     "server": "node server/index.js",
     "client":"npm run start --prefix client",
