@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getProduct } from '../redux/actions/productActions';
 import { useEffect, useState } from 'react';
+import { addCartItem } from '../redux/actions/cartActions';
 import Star from '../components/Star';
 
 const ProductScreen = () => {
@@ -33,6 +34,8 @@ const ProductScreen = () => {
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const { loading, error, product } = useSelector((state) => state.product);
+	const { cartItems } = useSelector((state) => state.cart);
+	const toast = useToast();
 
 	useEffect(() => {
 		dispatch(getProduct(id));
@@ -47,6 +50,19 @@ const ProductScreen = () => {
 		}
 	};
 
+	const addItem = () => {
+		if (cartItems.some((cartItem) => cartItem.id === id)) {
+			cartItems.find((cartItem) => cartItem.id === id);
+			dispatch(addCartItem(id, amount));
+		} else {
+			dispatch(addCartItem(id, amount));
+		}
+		toast({
+			description: 'Item has been added.',
+			status: 'success',
+			isClosable: true,
+		});
+	};
 	return (
 		<Wrap spacing='30px' justify='center' minHeight='100vh'>
 			{loading ? (
@@ -114,7 +130,11 @@ const ProductScreen = () => {
 									<Badge fontSize='lg' width='170px' textAlign='center' colorScheme='gray'>
 										In Stock: {product.stock}
 									</Badge>
-									<Button variant='outline' isDisabled={product.stock === 0} colorScheme='cyan' onClick={() => {}}>
+									<Button
+										variant='outline'
+										isDisabled={product.stock === 0}
+										colorScheme='cyan'
+										onClick={() => addItem()}>
 										Add to cart
 									</Button>
 									<Stack width='270px'>
