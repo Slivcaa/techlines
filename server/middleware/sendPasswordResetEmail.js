@@ -14,7 +14,7 @@ export const sendPasswordResetEmail = (token, email, name) => {
 		service: 'gmail',
 		auth: {
 			user: 'golubevamaria5@gmail.com',
-			pass: 'cwzk uodj bemu qmkl',
+			pass: 'fuqv oshw siti bljj',
 		},
 	});
 
