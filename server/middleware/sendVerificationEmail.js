@@ -1,5 +1,8 @@
-import nodemailer from 'nodemailer';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
+import nodemailer from 'nodemailer';
+// ziuw dugr raar dzut
+// techlines09@gmail.com
 export const sendVerificationEmail = (token, email, name) => {
 	const html = `
     <html>
@@ -15,13 +18,13 @@ export const sendVerificationEmail = (token, email, name) => {
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
-			user: 'golubevamaria5@gmail.com',
-			pass: 'fuqv oshw siti bljj',
+			user: 'techlines09@gmail.com',
+			pass: 'ziuw dugr raar dzut',
 		},
 	});
 
 	const mailOptions = {
-		from: 'golubevamaria5@gmail.com',
+		from: 'techlines09@gmail.com',
 		to: email,
 		subject: 'Verify your email address',
 		html: html,

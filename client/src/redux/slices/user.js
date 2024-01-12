@@ -30,7 +30,7 @@ export const userSlice = createSlice({
 			state.loading = false;
 		},
 		verificationEmail: (state) => {
-			state.userInfo.active = true;
+			state.userInfo && (state.userInfo.active = true);
 			state.loading = false;
 			state.error = null;
 		},
