@@ -1,6 +1,6 @@
 import express from 'express';
 import Product from '../models/Product.js';
-import { protectRoute } from '../middleware/authMiddleware.js';
+import { protectRoute, admin } from '../middleware/authMiddleware.js';
 import asyncHandler from 'express-async-handler';
 import User from '../models/User.js';
 
@@ -96,75 +96,80 @@ const createNewProduct = asyncHandler(async (req, res) => {
 	}
 });
 
-// const updateProduct = asyncHandler(async (req, res) => {
-// 	const { brand, name, category, stock, price, id, productIsNew, description, subtitle, stripeId, imageOne, imageTwo } =
-// 		req.body;
-// 	console.log(stripeId);
+const updateProduct = asyncHandler(async (req, res) => {
+	const { brand, name, category, stock, price, id, productIsNew, description, subtitle, stripeId, imageOne, imageTwo } =
+		req.body;
+	console.log(stripeId);
 
-// 	const product = await Product.findById(id);
+	const product = await Product.findById(id);
 
-// 	if (product) {
-// 		product.name = name;
-// 		product.subtitle = subtitle;
-// 		product.price = price;
-// 		product.description = description;
-// 		product.brand = brand;
-// 		product.category = category;
-// 		product.stock = stock;
-// 		product.productIsNew = productIsNew;
-// 		product.stripeId = stripeId;
-// 		product.images = [imageOne, imageTwo];
+	if (product) {
+		product.name = name;
+		product.subtitle = subtitle;
+		product.price = price;
+		product.description = description;
+		product.brand = brand;
+		product.category = category;
+		product.stock = stock;
+		product.productIsNew = productIsNew;
+		product.stripeId = stripeId;
+		product.images = [imageOne, imageTwo];
 
-// 		await product.save();
+		await product.save();
 
-// 		const products = await Product.find({});
+		const products = await Product.find({});
 
-// 		res.json(products);
-// 	} else {
-// 		res.status(404).send('Product not found.');
-// 		throw new Error('Product not found.');
-// 	}
-// });
+		res.json(products);
+	} else {
+		res.status(404).send('Product not found.');
+		throw new Error('Product not found.');
+	}
+});
 
-// const removeProductReview = asyncHandler(async (req, res) => {
-// 	const product = await Product.findById(req.params.productId);
+const removeProductReview = asyncHandler(async (req, res) => {
+	const product = await Product.findById(req.params.productId);
 
-// 	const updatedReviews = product.reviews.filter((review) => review._id.valueOf() !== req.params.reviewId);
+	const updatedReviews = product.reviews.filter((review) => review._id.valueOf() !== req.params.reviewId);
 
-// 	if (product) {
-// 		product.reviews = updatedReviews;
+	if (product) {
+		product.reviews = updatedReviews;
 
-// 		product.numberOfReviews = product.reviews.length;
+		product.numberOfReviews = product.reviews.length;
 
-// 		if (product.numberOfReviews > 0) {
-// 			product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
-// 		} else {
-// 			product.rating = 5;
-// 		}
+		if (product.numberOfReviews > 0) {
+			product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+		} else {
+			product.rating = 5;
+		}
 
-// 		await product.save();
-// 		const products = await Product.find({});
-// 		res.json({ products, pagination: {} });
-// 	} else {
-// 		res.status(404).send('Product not found.');
-// 		throw new Error('Product not found.');
-// 	}
-// });
+		await product.save();
+		const products = await Product.find({});
+		res.json({ products, pagination: {} });
+	} else {
+		res.status(404).send('Product not found.');
+		throw new Error('Product not found.');
+	}
+});
 
-// const deleteProduct = asyncHandler(async (req, res) => {
-// 	const product = await Product.findByIdAndDelete(req.params.id);
+const deleteProduct = asyncHandler(async (req, res) => {
+	const product = await Product.findByIdAndDelete(req.params.id);
 
-// 	if (product) {
-// 		res.json(product);
-// 	} else {
-// 		res.status(404).send('Product not found.');
-// 		throw new Error('Product not found.');
-// 	}
-// });
+	if (product) {
+		res.json(product);
+	} else {
+		res.status(404).send('Product not found.');
+		throw new Error('Product not found.');
+	}
+});
 
 productRoutes.route('/:page/:perPage').get(getProducts);
 productRoutes.route('/').get(getProducts);
 productRoutes.route('/:id').get(getProduct);
 productRoutes.route('/reviews/:id').post(protectRoute, createProductReview);
+productRoutes.route('/:id').delete(protectRoute, admin, deleteProduct);
+productRoutes.route('/').put(protectRoute, admin, updateProduct);
+productRoutes.route('/').post(protectRoute, admin, createNewProduct);
+productRoutes.route('/:productId/:reviewId').put(protectRoute, admin, removeProductReview);
+productRoutes.route('/').post(protectRoute, admin, createNewProduct);
 
 export default productRoutes;
